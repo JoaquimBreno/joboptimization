@@ -43,5 +43,14 @@ int main ()
 */
 vector<vector<int>> greedy(int &n, int &m, int &p, std::vector<int> &arrayB, std::vector<std::vector<int>> &matrizT, std::vector<std::vector<int>> &matrizC){
 
-    for i 
+    vector<vector<int>> matrizCT;
+    for (int i = 0; i < matrizT.size(); ++i) {
+        vector<int> row;
+        for (int j = 0; j < matrizT[i].size(); ++j) {
+            row.push_back(matrizC[i][j]/matrizT[i][j]);
+        }
+        matrizCT.push_back(row);
+    }
+
+    
 }
