@@ -4,33 +4,33 @@
 
 using namespace std;
 
-void mergeInt(vector<int>& v, int i, int meio, int j, int fim, int k, vector<int>& aux) {
-    if (i <= meio && (j > fim || v[i] < v[j])) {
-        aux[k] = v[i];
-        mergeInt(v, i + 1, meio, j, fim, k + 1, aux);
-    } else if (j <= fim) {
-        aux[k] = v[j];
-        mergeInt(v, i, meio, j + 1, fim, k + 1, aux);
-    }
-}
+// void mergeInt(vector<int>& v, int i, int meio, int j, int fim, int k, vector<int>& aux) {
+//     if (i <= meio && (j > fim || v[i] < v[j])) {
+//         aux[k] = v[i];
+//         mergeInt(v, i + 1, meio, j, fim, k + 1, aux);
+//     } else if (j <= fim) {
+//         aux[k] = v[j];
+//         mergeInt(v, i, meio, j + 1, fim, k + 1, aux);
+//     }
+// }
 
-void mergeSortInt(vector<int>& v, int inicio, int fim, vector<int>& aux) {
-    if (inicio < fim) {
-        int meio = (inicio + fim) / 2;
-        mergeSortInt(v, inicio, meio, aux);
-        mergeSortInt(v, meio + 1, fim, aux);
-        mergeInt(v, inicio, meio, meio + 1, fim, 0, aux);
+// void mergeSortInt(vector<int>& v, int inicio, int fim, vector<int>& aux) {
+//     if (inicio < fim) {
+//         int meio = (inicio + fim) / 2;
+//         mergeSortInt(v, inicio, meio, aux);
+//         mergeSortInt(v, meio + 1, fim, aux);
+//         mergeInt(v, inicio, meio, meio + 1, fim, 0, aux);
 
-        for (int l = 0; l <= fim - inicio; ++l) {
-            v[inicio + l] = aux[l];
-        }
-    }
-}
+//         for (int l = 0; l <= fim - inicio; ++l) {
+//             v[inicio + l] = aux[l];
+//         }
+//     }
+// }
 
-void mergeSort(vector<int>& v) {
-    vector<int> aux(v.size());
-    mergeSortInt(v, 0, v.size() - 1, aux);
-}
+// void mergeSort(vector<int>& v) {
+//     vector<int> aux(v.size());
+//     mergeSortInt(v, 0, v.size() - 1, aux);
+// }
 
 void mergePairs(vector<pair<int, float>>& v, int i, int meio, int j, int fim, int k, vector<pair<int, float>>& aux) {
     if (i <= meio && (j > fim || v[i].second < v[j].second)) {
@@ -59,22 +59,13 @@ void pairMergeSort(vector<pair<int, float>>& v) {
     vector<pair<int, float>> aux(v.size());
     mergeSortPairs(v, 0, v.size() - 1, aux);
 }  
-// int main() {
-//     vector<int> a = {10, 2, 7, 1, 4, 9, 3, 8, 0, 5, 6};
-//     mergeSort(a);
-//     for (int num : a) {
-//         cout << num << " ";
-//     }
-//     cout << endl;
-//     return 0;
-// }
 
-void greedy(int &n, int &m, int &p, std::vector<int> &arrayB, std::vector<std::vector<int>> &matrizT, std::vector<std::vector<int>> &matrizC){
-
-    mergeSort(arrayB);
+void greedy(int &n, int &m, int &p, std::vector<pair<int, float>> &arrayB, std::vector<std::vector<int>> &matrizT, std::vector<std::vector<int>> &matrizC){
+    
+    pairMergeSort(arrayB);
     cout << "Array B: ";
-    for (int val : arrayB) {
-        cout << val << " ";
+    for (const auto& pair : arrayB) {
+        cout << "(" << pair.first << ", " << pair.second << ") ";
     }
     cout << endl;
 
@@ -92,9 +83,26 @@ void greedy(int &n, int &m, int &p, std::vector<int> &arrayB, std::vector<std::v
         pairMergeSort(row);
     }
 
-    for (const auto& row : matrizCT) {
-        for (const auto& pair : row) {
-            cout << "(" << pair.first << ", " << pair.second << ") ";
+    vector<vector<int>> greedySolution;
+    float timeCost;
+    int time;
+    for (int i = arrayB.size() - 1; i >= 0; --i) {
+        pair<int,float> itemB = arrayB[i];
+        timeCost = itemB.second;
+        vector<int> solution;
+        for(pair<int,float> &row: matrizCT[itemB.first]){
+            time = matrizT[itemB.first][row.first];
+            if(time <= timeCost){
+                solution.push_back(row.first);
+                timeCost -= time;
+            }
+        }
+        greedySolution.push_back(solution);
+    }
+
+    for(const auto& row: greedySolution){
+        for(int val: row){
+            cout << val << " ";
         }
         cout << endl;
     }

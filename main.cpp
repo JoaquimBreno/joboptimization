@@ -4,7 +4,7 @@
 
 using namespace std;
 
-void lerEntradas(int &n, int &m, int &p, vector<int> &arrayB, vector<vector<int>> &matrizT, vector<vector<int>> &matrizC) {
+void lerEntradas(int &n, int &m, int &p, vector<pair<int, float>> &arrayB, vector<vector<int>> &matrizT, vector<vector<int>> &matrizC) {
     // Lendo as entradas
     cin >> n; // Número de jobs
     cin >> m; // Número de servidores
@@ -14,7 +14,7 @@ void lerEntradas(int &n, int &m, int &p, vector<int> &arrayB, vector<vector<int>
     // Lendo o array B
     for (int i = 0; i < m; ++i) {
         cin >> temp;
-        arrayB.push_back(temp);
+        arrayB.push_back(make_pair(i, temp));   
     }
 
     // Lendo a matriz T
@@ -40,15 +40,15 @@ void lerEntradas(int &n, int &m, int &p, vector<int> &arrayB, vector<vector<int>
 
 int main() {
     int n, m, p;
-    vector<int> arrayB;
+    vector<pair<int, float>>  arrayB;
     vector<vector<int>> matrizT;
     vector<vector<int>> matrizC;
 
     lerEntradas(n, m, p, arrayB, matrizT, matrizC);
     // Exibindo as entradas lidas (apenas para verificação)
     cout << "Array B: ";
-    for (int val : arrayB) {
-        cout << val << " ";
+    for (const auto &pair : arrayB) {
+        cout << "(" << pair.first << ", " << pair.second << ") ";
     }
     cout << endl;
 
