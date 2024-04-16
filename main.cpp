@@ -68,5 +68,7 @@ int main() {
         cout << endl;
     }
 
+    greedy(n, m, p, arrayB, matrizT, matrizC);
+    
     return 0;
 }
