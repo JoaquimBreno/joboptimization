@@ -32,6 +32,33 @@ void mergeSort(vector<int>& v) {
     mergeSortInt(v, 0, v.size() - 1, aux);
 }
 
+void mergePairs(vector<pair<int, float>>& v, int i, int meio, int j, int fim, int k, vector<pair<int, float>>& aux) {
+    if (i <= meio && (j > fim || v[i].second < v[j].second)) {
+        aux[k] = v[i];
+        mergePairs(v, i + 1, meio, j, fim, k + 1, aux);
+    } else if (j <= fim) {
+        aux[k] = v[j];
+        mergePairs(v, i, meio, j + 1, fim, k + 1, aux);
+    }
+}
+
+void mergeSortPairs(vector<pair<int, float>>& v, int inicio, int fim, vector<pair<int, float>>& aux) {
+    if (inicio < fim) {
+        int meio = (inicio + fim) / 2;
+        mergeSortPairs(v, inicio, meio, aux);
+        mergeSortPairs(v, meio + 1, fim, aux);
+        mergePairs(v, inicio, meio, meio + 1, fim, 0, aux);
+
+        for (int l = 0; l <= fim - inicio; ++l) {
+            v[inicio + l] = aux[l];
+        }
+    }
+}
+
+void pairMergeSort(vector<pair<int, float>>& v) {
+    vector<pair<int, float>> aux(v.size());
+    mergeSortPairs(v, 0, v.size() - 1, aux);
+}  
 // int main() {
 //     vector<int> a = {10, 2, 7, 1, 4, 9, 3, 8, 0, 5, 6};
 //     mergeSort(a);
@@ -42,7 +69,7 @@ void mergeSort(vector<int>& v) {
 //     return 0;
 // }
 
-vector<vector<int>> greedy(int &n, int &m, int &p, std::vector<int> &arrayB, std::vector<std::vector<int>> &matrizT, std::vector<std::vector<int>> &matrizC){
+void greedy(int &n, int &m, int &p, std::vector<int> &arrayB, std::vector<std::vector<int>> &matrizT, std::vector<std::vector<int>> &matrizC){
 
     mergeSort(arrayB);
     cout << "Array B: ";
@@ -59,6 +86,10 @@ vector<vector<int>> greedy(int &n, int &m, int &p, std::vector<int> &arrayB, std
             row.push_back(make_pair(j, result));
         }
         matrizCT.push_back(row);
+    }
+
+    for (auto& row : matrizCT) {
+        pairMergeSort(row);
     }
 
     for (const auto& row : matrizCT) {
