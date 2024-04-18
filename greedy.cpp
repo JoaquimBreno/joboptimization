@@ -4,33 +4,32 @@
 
 using namespace std;
 
-// void mergeInt(vector<int>& v, int i, int meio, int j, int fim, int k, vector<int>& aux) {
-//     if (i <= meio && (j > fim || v[i] < v[j])) {
-//         aux[k] = v[i];
-//         mergeInt(v, i + 1, meio, j, fim, k + 1, aux);
-//     } else if (j <= fim) {
-//         aux[k] = v[j];
-//         mergeInt(v, i, meio, j + 1, fim, k + 1, aux);
-//     }
-// }
+// BUSCA BINÀRIA
+int binary_search(vector<int>& jobs_used, int search){
+    // intervalo
+    int left = 0;
+    int right = jobs_used.size()-1;
+    while(left<right){
+        int mid = (left+right)/2;
+        
+        if(jobs_used[mid]<search){
+            left = mid+1;
+        }else if(jobs_used[mid]>search){
+            right = mid-1;
+        }else{
+            left = right = mid;
+        }
+    }
+    
+    if(jobs_used[left]==search){
+        return 1;
+        
+    }else{
+        return 0;
+    }
+}
+// BUSCA BINÁRIA
 
-// void mergeSortInt(vector<int>& v, int inicio, int fim, vector<int>& aux) {
-//     if (inicio < fim) {
-//         int meio = (inicio + fim) / 2;
-//         mergeSortInt(v, inicio, meio, aux);
-//         mergeSortInt(v, meio + 1, fim, aux);
-//         mergeInt(v, inicio, meio, meio + 1, fim, 0, aux);
-
-//         for (int l = 0; l <= fim - inicio; ++l) {
-//             v[inicio + l] = aux[l];
-//         }
-//     }
-// }
-
-// void mergeSort(vector<int>& v) {
-//     vector<int> aux(v.size());
-//     mergeSortInt(v, 0, v.size() - 1, aux);
-// }
 
 void mergePairs(vector<pair<int, float>>& v, int i, int meio, int j, int fim, int k, vector<pair<int, float>>& aux) {
     if (i <= meio && (j > fim || v[i].second < v[j].second)) {
@@ -60,7 +59,7 @@ void pairMergeSort(vector<pair<int, float>>& v) {
     mergeSortPairs(v, 0, v.size() - 1, aux);
 }  
 
-void greedy(int &n, int &m, int &p, std::vector<pair<int, float>> &arrayB, std::vector<std::vector<int>> &matrizT, std::vector<std::vector<int>> &matrizC){
+vector<vector<int>> greedy(int &n, int &m, std::vector<pair<int, float>> &arrayB, std::vector<std::vector<int>> &matrizT, std::vector<std::vector<int>> &matrizC){
     
     pairMergeSort(arrayB);
     cout << "Array B: ";
@@ -70,15 +69,15 @@ void greedy(int &n, int &m, int &p, std::vector<pair<int, float>> &arrayB, std::
     cout << endl;
 
     vector<vector<pair<int, float>>> matrizCT;
-    for (size_t i = 0; i < matrizT.size(); ++i) {
+    for (int i = 0; i < m; ++i) {
         vector<pair<int, float>> row;
-        for (size_t j = 0; j < matrizT[i].size(); ++j) {
+        for (int j = 0; j < n; ++j) {
             float result = static_cast<float>(matrizC[i][j]) / matrizT[i][j];
             row.push_back(make_pair(j, result));
         }
         matrizCT.push_back(row);
     }
-
+    
     for (auto& row : matrizCT) {
         pairMergeSort(row);
     }
@@ -86,25 +85,39 @@ void greedy(int &n, int &m, int &p, std::vector<pair<int, float>> &arrayB, std::
     vector<vector<int>> greedySolution;
     float timeCost;
     int time;
-    for (int i = arrayB.size() - 1; i >= 0; --i) {
-        pair<int,float> itemB = arrayB[i];
-        timeCost = itemB.second;
-        vector<int> solution;
-        for(pair<int,float> &row: matrizCT[itemB.first]){
-            time = matrizT[itemB.first][row.first];
-            if(time <= timeCost){
-                solution.push_back(row.first);
-                timeCost -= time;
+    vector<int> jobs_used;
+    int answer; // retorno busca binária
+    
+    for (int i = m-1; i >= 0; --i) {
+            pair<int,float> itemB = arrayB[i];
+            timeCost = itemB.second;
+            vector<int> solution;
+            vector<int> lastSolution;
+            for(pair<int,float> &row: matrizCT[itemB.first]){
+                time = matrizT[itemB.first][row.first];
+                if((time <= timeCost) && (i == m-1)){
+                    solution.push_back(row.first);
+                    timeCost -= time;
+                    jobs_used.push_back(row.first);
+                }else{
+                    answer = binary_search(jobs_used, row.first);
+                    if(answer == 0){
+                        if(time <= timeCost){
+                            solution.push_back(row.first);
+                            timeCost -= time;
+                            jobs_used.push_back(row.first);
+                        }
+                        else if(time > timeCost && i==0){
+                            lastSolution.push_back(row.first);
+                        }
+                    }
+                }
             }
-        }
-        greedySolution.push_back(solution);
+            greedySolution.push_back(solution);
+            if(i==0){
+                greedySolution.push_back(lastSolution);
+            }
     }
 
-    for(const auto& row: greedySolution){
-        for(int val: row){
-            cout << val << " ";
-        }
-        cout << endl;
-    }
-
+    return greedySolution;
 }
