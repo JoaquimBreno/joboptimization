@@ -69,36 +69,43 @@ int main() {
         cout << endl;
     }
 
-    // Adding local server
-    // CostTimeServer local_server = CostTimeServer{-1, p};
-    // servers.push_back(local_server);
+    //Adding local server
+    CostTimeServer local_server = CostTimeServer{-1, p};
+    servers.push_back(local_server);
     
-    // int countInverse = m-1;
-    // for(int i=0; i<m+1; i++){
-    //     cout << "Servidor " << i << ": " << endl;
-    //     float time = 0;
-    //     float cost = 0;
-    //     for(int j=0; j<greedySolution[i].size(); j++){
-    //         if(i != m){
-    //             servers[countInverse] += matrizT[servers[countInverse].id][greedySolution[i][j]];
-    //             cost += matrizC[servers[countInverse].id][greedySolution[i][j]];
-    //         }
-    //         else{
-    //             cost += p;  
-    //         }
-    //     }
-    //     if(i != m){
-    //         countInverse--;
-    //         cout << "Time: " << time << " Cost: " << cost << endl; 
-    //         costTimeServers.push_back(CostTimeServer{cost, time});
-    //     }
-    //     else{
-    //         cout << "Cost: " << cost << endl; 
-    //         costTimeServers.push_back(CostTimeServer{cost, 0});
-    //     }
+    for (const auto& server: servers){
+        cout << "Server: " << server.id << " Time: " << server.timeMax << " Cost: " << server.costUsed << " TimeUsed: " << server.timeUsed << endl; 
+    }
 
-    // }
+    int countInverse = 0;
+    int countSolution;
+    for(int i=m; i>=0; i--){
+        float time = 0;
+        float cost = 0;
+        if(i==m){
+            countSolution = m;
+        }
+        else{
+            countSolution = countInverse;
+        }
+
+        for(int j=0; j<greedySolution[countSolution].size(); j++){
+            if(i != m){
+                servers[i].timeUsed += matrizT[servers[i].id][greedySolution[countSolution][j]];
+                servers[i].costUsed += matrizC[servers[i].id][greedySolution[countSolution][j]];
+            }
+            else{
+                servers[i].costUsed  += p;  
+            }
+        }
+        if(i!=m){
+            countInverse++;
+        }
+    }
 
 
+    for (const auto& server: servers){
+        cout << "Server: " << server.id << " Time: " << server.timeMax << " Cost: " << server.costUsed << " TimeUsed: " << server.timeUsed << endl; 
+    }
     return 0;
 }

@@ -12,9 +12,6 @@ int binary_search(vector<int> &jobs_used, int search){
         return a < b;
     });
 
-    for (const auto &i: jobs_used){
-        cout << i << " ";
-    }
     // intervalo
     int left = 0;
     int right = jobs_used.size()-1;
