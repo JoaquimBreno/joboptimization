@@ -2,10 +2,19 @@
 #include <iostream>
 #include <vector>
 
+
 using namespace std;
 
 // BUSCA BINÀRIA
-int binary_search(vector<int>& jobs_used, int search){
+int binary_search(vector<int> &jobs_used, int search){
+
+    genericMergeSort(jobs_used, [](const int& a, const int& b) {
+        return a < b;
+    });
+
+    for (const auto &i: jobs_used){
+        cout << i << " ";
+    }
     // intervalo
     int left = 0;
     int right = jobs_used.size()-1;
@@ -31,42 +40,7 @@ int binary_search(vector<int>& jobs_used, int search){
 // BUSCA BINÁRIA
 
 
-void mergePairs(vector<pair<int, float>>& v, int i, int meio, int j, int fim, int k, vector<pair<int, float>>& aux) {
-    if (i <= meio && (j > fim || v[i].second < v[j].second)) {
-        aux[k] = v[i];
-        mergePairs(v, i + 1, meio, j, fim, k + 1, aux);
-    } else if (j <= fim) {
-        aux[k] = v[j];
-        mergePairs(v, i, meio, j + 1, fim, k + 1, aux);
-    }
-}
-
-void mergeSortPairs(vector<pair<int, float>>& v, int inicio, int fim, vector<pair<int, float>>& aux) {
-    if (inicio < fim) {
-        int meio = (inicio + fim) / 2;
-        mergeSortPairs(v, inicio, meio, aux);
-        mergeSortPairs(v, meio + 1, fim, aux);
-        mergePairs(v, inicio, meio, meio + 1, fim, 0, aux);
-
-        for (int l = 0; l <= fim - inicio; ++l) {
-            v[inicio + l] = aux[l];
-        }
-    }
-}
-
-void pairMergeSort(vector<pair<int, float>>& v) {
-    vector<pair<int, float>> aux(v.size());
-    mergeSortPairs(v, 0, v.size() - 1, aux);
-}  
-
-vector<vector<int>> greedy(int &n, int &m, std::vector<pair<int, float>> &arrayB, std::vector<std::vector<int>> &matrizT, std::vector<std::vector<int>> &matrizC){
-    
-    pairMergeSort(arrayB);
-    cout << "Array B: ";
-    for (const auto& pair : arrayB) {
-        cout << "(" << pair.first << ", " << pair.second << ") ";
-    }
-    cout << endl;
+vector<vector<int>> greedy(int &n, int &m, vector<CostTimeServer> &servers, vector<vector<int>> &matrizT, vector<vector<int>> &matrizC){
 
     vector<vector<pair<int, float>>> matrizCT;
     for (int i = 0; i < m; ++i) {
@@ -77,9 +51,11 @@ vector<vector<int>> greedy(int &n, int &m, std::vector<pair<int, float>> &arrayB
         }
         matrizCT.push_back(row);
     }
-    
-    for (auto& row : matrizCT) {
-        pairMergeSort(row);
+
+    for (vector<pair<int,float>> & row : matrizCT) {
+        genericMergeSort(row, [](const pair<int, float>& a, const pair<int, float>& b) {
+            return a.second < b.second;
+        });
     }
 
     vector<vector<int>> greedySolution;
@@ -89,12 +65,12 @@ vector<vector<int>> greedy(int &n, int &m, std::vector<pair<int, float>> &arrayB
     int answer; // retorno busca binária
     
     for (int i = m-1; i >= 0; --i) {
-            pair<int,float> itemB = arrayB[i];
-            timeCost = itemB.second;
+            CostTimeServer server = servers[i];
+            timeCost = server.timeMax;
             vector<int> solution;
             vector<int> lastSolution;
-            for(pair<int,float> &row: matrizCT[itemB.first]){
-                time = matrizT[itemB.first][row.first];
+            for(pair<int,float> &row: matrizCT[server.id]){
+                time = matrizT[server.id][row.first];
                 if((time <= timeCost) && (i == m-1)){
                     solution.push_back(row.first);
                     timeCost -= time;

@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include "greedy.h"
+#include "CostTimeServer.h"
+#include "merge.h"
 
 using namespace std;
 
@@ -14,16 +16,17 @@ int main() {
     n=6;
     m=2;
     p=1000;
-    std::vector<std::pair<int, float>> arrayB = {
+    vector<CostTimeServer> servers = {
         {0, 220.0f}, 
         {1, 350.0f}
     };
-    std::vector<std::vector<int>> matrizT = {
+
+    vector<vector<int>> matrizT = {
         {120, 80, 180, 95, 35, 52},
         {145, 70, 230, 70, 40, 59}
     };
 
-    std::vector<std::vector<int>> matrizC = {
+    vector<vector<int>> matrizC = {
         {350, 50, 540, 245, 145, 200},
         {410, 80, 500, 200, 100, 196}
     };
@@ -46,15 +49,17 @@ int main() {
         cout << endl;
     }
 
-    pairMergeSort(arrayB); 
+    genericMergeSort(servers, [](const  CostTimeServer& a, const CostTimeServer& b) {
+        return a.timeMax < b.timeMax; // Ordenando por timeMax
+    });
     
     // Exibindo as entradas lidas (apenas para verificação)
     cout << "Array B: ";
-    for (const auto &pair : arrayB) {
-        cout << "(" << pair.first << ", " << pair.second << ") ";
+    for (const auto &server : servers) {
+        cout << "(" << server.id << ", " << server.timeMax << ") ";
     }
     cout << endl;
-    vector<vector<int>> greedySolution = greedy(n, m, arrayB, matrizT, matrizC);
+    vector<vector<int>> greedySolution = greedy(n, m, servers, matrizT, matrizC);
     
     cout << "HERE THE SOLUTION" << endl;
     for(const auto& row: greedySolution){
@@ -64,28 +69,36 @@ int main() {
         cout << endl;
     }
 
-    int countInverse = m-1;
-    for(int i=0; i<m+1; i++){
-        cout << "Servidor " << i << ": " << endl;
-        float time = 0;
-        float cost = 0;
-        for(int j=0; j<greedySolution[i].size(); j++){
-            if(i != m){
-                time += matrizT[arrayB[countInverse].first][greedySolution[i][j]];
-                cost += matrizC[arrayB[countInverse].first][greedySolution[i][j]];
-            }
-            else{
-                cost += p;  
-            }
-        }
-        if(i != m){
-            countInverse--;
-            cout << "Time: " << time << " Cost: " << cost << endl; 
-        }
-        else{
-            cout << "Cost: " << cost << endl; 
-        }
+    // Adding local server
+    // CostTimeServer local_server = CostTimeServer{-1, p};
+    // servers.push_back(local_server);
+    
+    // int countInverse = m-1;
+    // for(int i=0; i<m+1; i++){
+    //     cout << "Servidor " << i << ": " << endl;
+    //     float time = 0;
+    //     float cost = 0;
+    //     for(int j=0; j<greedySolution[i].size(); j++){
+    //         if(i != m){
+    //             servers[countInverse] += matrizT[servers[countInverse].id][greedySolution[i][j]];
+    //             cost += matrizC[servers[countInverse].id][greedySolution[i][j]];
+    //         }
+    //         else{
+    //             cost += p;  
+    //         }
+    //     }
+    //     if(i != m){
+    //         countInverse--;
+    //         cout << "Time: " << time << " Cost: " << cost << endl; 
+    //         costTimeServers.push_back(CostTimeServer{cost, time});
+    //     }
+    //     else{
+    //         cout << "Cost: " << cost << endl; 
+    //         costTimeServers.push_back(CostTimeServer{cost, 0});
+    //     }
 
-    }
+    // }
+
+
     return 0;
 }
