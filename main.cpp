@@ -73,8 +73,6 @@ int main() {
     servers.push_back(local_server);
     
 
-    int countInverse = 0;
-    int countSolution;
     for(int i=0; i<=m; i++){
         float time = 0;
         float cost = 0;
