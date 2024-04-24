@@ -61,14 +61,15 @@ vector<vector<int>> greedy(int &n, int &m, vector<CostTimeServer> &servers, vect
     vector<int> jobs_used;
     int answer; // retorno busca binária
     
-    for (int i = m-1; i >= 0; --i) {
+    for (int i = 0; i <= m-1; ++i) {
             CostTimeServer server = servers[i];
             timeCost = server.timeMax;
+            cout << "Server: " << server.id << " Time: " << server.timeMax << " Cost: " << server.costUsed << " TimeUsed: " << server.timeUsed << endl;
             vector<int> solution;
             vector<int> lastSolution;
             for(pair<int,float> &row: matrizCT[server.id]){
                 time = matrizT[server.id][row.first];
-                if((time <= timeCost) && (i == m-1)){
+                if((time <= timeCost) && (i == 0)){
                     solution.push_back(row.first);
                     timeCost -= time;
                     jobs_used.push_back(row.first);
@@ -80,16 +81,17 @@ vector<vector<int>> greedy(int &n, int &m, vector<CostTimeServer> &servers, vect
                             timeCost -= time;
                             jobs_used.push_back(row.first);
                         }
-                        else if(time > timeCost && i==0){
+                        else if(time > timeCost && i==m-1){
                             lastSolution.push_back(row.first);
                         }
                     }
                 }
             }
             greedySolution.push_back(solution);
-            if(i==0){
+            if(i==m-1){
                 greedySolution.push_back(lastSolution);
             }
+            
     }
 
     return greedySolution;

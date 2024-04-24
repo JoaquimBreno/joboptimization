@@ -50,7 +50,7 @@ int main() {
     }
 
     genericMergeSort(servers, [](const  CostTimeServer& a, const CostTimeServer& b) {
-        return a.timeMax < b.timeMax; // Ordenando por timeMax
+        return a.timeMax > b.timeMax; // Ordenando por timeMax
     });
     
     // Exibindo as entradas lidas (apenas para verificação)
@@ -68,44 +68,26 @@ int main() {
         }
         cout << endl;
     }
-
     //Adding local server
     CostTimeServer local_server = CostTimeServer{-1, p};
     servers.push_back(local_server);
     
-    for (const auto& server: servers){
-        cout << "Server: " << server.id << " Time: " << server.timeMax << " Cost: " << server.costUsed << " TimeUsed: " << server.timeUsed << endl; 
-    }
 
     int countInverse = 0;
     int countSolution;
-    for(int i=m; i>=0; i--){
+    for(int i=0; i<=m; i++){
         float time = 0;
         float cost = 0;
-        if(i==m){
-            countSolution = m;
-        }
-        else{
-            countSolution = countInverse;
-        }
 
-        for(int j=0; j<greedySolution[countSolution].size(); j++){
+        for(int j=0; j<greedySolution[i].size(); j++){
             if(i != m){
-                servers[i].timeUsed += matrizT[servers[i].id][greedySolution[countSolution][j]];
-                servers[i].costUsed += matrizC[servers[i].id][greedySolution[countSolution][j]];
+                servers[i].timeUsed += matrizT[servers[i].id][greedySolution[i][j]];
+                servers[i].costUsed += matrizC[servers[i].id][greedySolution[i][j]];
             }
             else{
                 servers[i].costUsed  += p;  
             }
         }
-        if(i!=m){
-            countInverse++;
-        }
     }
 
-
-    for (const auto& server: servers){
-        cout << "Server: " << server.id << " Time: " << server.timeMax << " Cost: " << server.costUsed << " TimeUsed: " << server.timeUsed << endl; 
-    }
-    return 0;
 }
