@@ -1,8 +1,10 @@
 #include <iostream>
 #include <vector>
 #include "greedy.h"
-#include "CostTimeServer.h"
+#include "swap.h"
 #include "merge.h"
+
+#include "CostTimeServer.h"
 
 using namespace std;
 
@@ -88,4 +90,5 @@ int main() {
         }
     }
 
+    vector<vector<int>> swappedSolutin = swap(greedySolution, matrizT, matrizC, servers, p);
 }
