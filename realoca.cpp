@@ -8,7 +8,7 @@
 using namespace std;
 
 vector<vector<int>> realoca(int m, vector<vector<int>>& solution, vector<vector<int>>& matrizT, vector<vector<int>>& matrizC, vector<CostTimeServer>& costTimeServers, int n){
-float soma, nova_soma;
+    float soma, nova_soma;
     int job = -1;
     int servidor = -1;
     bool found_element = false;
@@ -22,7 +22,7 @@ float soma, nova_soma;
     // cout << "soma " << soma << endl;
 
     for(int i = 0; i < n; i++){
-        // cout << "teste"<< i << endl;
+        cout << "teste"<< i << endl;
         servidor_group = 0;
         for (const auto& group : solution) {
             if(found_element){
@@ -45,28 +45,40 @@ float soma, nova_soma;
             servidor_group++;
         }
         
-        for(int j = 0; j < m; j++){
+        // cout << servidor_job << endl;
+        for(int j = 0; j <= m; j++){
+            // cout << costTimeServers[j].id << " " << servidor_job << endl;
             if(costTimeServers[j].id == servidor_job){
+                // cout << costTimeServers[j].id << " " << servidor_job << endl;
                 continue;
             }else{
-                // cout << "job 0 no servidor " << j << " " << matrizT[j][i] << " " << costTimeServers[j].timeUsed << " " << costTimeServers[j].timeMax << endl;
-                if (((matrizT[j][i] + costTimeServers[j].timeUsed) <= (costTimeServers[j].timeMax))){
-                    // cout << "teste " << matrizT[j][i] + costTimeServers[j].timeUsed  << endl;
-                    // cout << "teste " << matrizC[j][i] <<" " << costTimeServers[j].costUsed  << endl;
-                    costTimeServers[j].timeUsed += matrizT[j][i];
-                    costTimeServers[j].costUsed += matrizC[j][i];
-                    // cout << "teste " << matrizC[j][i] <<" " << costTimeServers[j].costUsed  << endl;
+                // cout << "job 0 no servidor " << j << " " << matrizT[costTimeServers[j].id][i] << " " << costTimeServers[j].timeUsed << " " << costTimeServers[j].timeMax << endl;
+                if(((matrizT[costTimeServers[j].id][i] + costTimeServers[j].timeUsed) <= (costTimeServers[j].timeMax))){
+                    
+                    // cout << "teste " << matrizT[costTimeServers[j].id][i] + costTimeServers[j].timeUsed  << endl;
+                    // cout << "teste " << matrizC[costTimeServers[j].id][i] <<" " << costTimeServers[j].costUsed  << endl;
+                    costTimeServers[j].timeUsed += matrizT[costTimeServers[j].id][i];
+                    costTimeServers[j].costUsed += matrizC[costTimeServers[j].id][i];
+                    // cout << "teste " << matrizC[costTimeServers[j].id][i] <<" " << costTimeServers[j].costUsed  << endl;
                     // cout << "teste " << costTimeServers[j].timeUsed  << endl;
-                    // percorrer solution e verificar em que servidor o job está
-                    // [[1 2 3][4 5][6]] o job 1 está no j= 0
-                    // logo o server dele será igual a servers[j]
-                    // para pegar as informações do server, server = servers[j].id, servers[j].timeMax, servers[j].timeUsed, servers[j].costUsed
-                    // cout << "teste 2 " << costTimeServers[costTimeServers[j].id].timeUsed  << endl;
-                    // cout << "teste 1 " << matrizC[costTimeServers[j].id][i] << endl;
-                    costTimeServers[costTimeServers[j].id].timeUsed -= matrizT[costTimeServers[j].id][i];
-                    costTimeServers[costTimeServers[j].id].costUsed -= matrizC[costTimeServers[j].id][i];
-                    // cout << "teste 1 " << costTimeServers[costTimeServers[j].id].costUsed  << endl;
-                    // cout << "teste 2 " << costTimeServers[costTimeServers[j].id].timeUsed  << endl;
+                    if(servidor_job == m){
+                        // cout << "server " << costTimeServers[m].id << i << j << endl;
+                        // cout << "teste 2 " << costTimeServers[m].timeUsed  << endl;
+                        // cout << "teste 1 " << matrizC[m][i] << endl;
+                        costTimeServers[m].timeUsed -= matrizT[m][i];
+                        costTimeServers[m].costUsed -= matrizC[m][i];
+                        // cout << "teste 1 " << costTimeServers[m].costUsed  << endl;
+                        // cout << "teste 2 " << costTimeServers[m].timeUsed  << endl;
+                    }else{
+                        // cout << "server " << costTimeServers[j].id << endl;
+                        // cout << "teste 2 " << costTimeServers[costTimeServers[j].id].timeUsed  << endl;
+                        // cout << "teste 1 " << matrizC[j][i] << endl;
+                        costTimeServers[costTimeServers[j].id].timeUsed -= matrizT[j][i];
+                        costTimeServers[costTimeServers[j].id].costUsed -= matrizC[j][i];
+                        // cout << "teste 1 " << costTimeServers[costTimeServers[j].id].costUsed  << endl;
+                        // cout << "teste 2 " << costTimeServers[costTimeServers[j].id].timeUsed  << endl;
+                    }
+                    
                     for(int k = 0; k <= m; k++){
                         nova_soma += costTimeServers[k].costUsed;
                         // cout << "soma: " << k << " " << costTimeServers[k].costUsed << endl;
@@ -76,7 +88,14 @@ float soma, nova_soma;
                         job = i;
                         servidor = j;
                         soma = nova_soma;
+                        cout << "cuida" << endl;
                         break;
+                    }else{
+                        costTimeServers[j].timeUsed -= matrizT[j][i];
+                        costTimeServers[j].costUsed -= matrizC[j][i];
+                        costTimeServers[costTimeServers[j].id].timeUsed += matrizT[costTimeServers[j].id][i];
+                        costTimeServers[costTimeServers[j].id].costUsed += matrizC[costTimeServers[j].id][i];
+                        
                     }
                 }
             }
@@ -86,31 +105,38 @@ float soma, nova_soma;
     int job_troca = job;
     int elementoRemovido;
     // Percorrendo o vector principal
-    for (vector<int>& vetorInterno : solution) {
-        // Percorrendo o vetor interno
-        for (int i = 0; i < vetorInterno.size(); ++i) {
-            // Verificando se o elemento é 5
-            if (vetorInterno[i] == job) {
-                // Removendo o elemento 5
-                elementoRemovido=vetorInterno[i];
-                vetorInterno.erase(vetorInterno.begin() + i);
-                // Ajustando o índice após a remoção
-                i--;
+    cout << job_troca << endl;
+    if(job_troca != -1){
+        for (vector<int>& vetorInterno : solution) {
+            // Percorrendo o vetor interno
+            for (int i = 0; i < vetorInterno.size(); ++i) {
+                // Verificando se o elemento é 5
+                if (vetorInterno[i] == job) {
+                    // Removendo o elemento 5
+                    elementoRemovido=vetorInterno[i];
+                    vetorInterno.erase(vetorInterno.begin() + i);
+                    // Ajustando o índice após a remoção
+                    i--;
+                }
             }
         }
+        
+        solution[servidor].push_back(elementoRemovido);
+
+        for (vector<int>& vetorInterno : solution) {
+            // Percorrendo o vetor interno
+            for (int i = 0; i < vetorInterno.size(); ++i) {
+                // Verificando se o elemento é 5
+                cout << "cuida "<< vetorInterno[i] << " " << i << endl;
+                return solution;
+            }
+        }
+    }else{
+        cout << "Não houve troca" << endl;
+        return 0;
     }
+}
 
-    solution[servidor].push_back(elementoRemovido);
-
-    // for (vector<int>& vetorInterno : solution) {
-    //     // Percorrendo o vetor interno
-    //     for (int i = 0; i < vetorInterno.size(); ++i) {
-    //         // Verificando se o elemento é 5
-    //         cout << "cuida "<< vetorInterno[i] << " " << i << endl;
-    //     }
-    // }
-
-    return solution;
 };
 //     int m=2;
 //     vector<vector<int>> solution = {{1,2,4},{0,3},{5}};
