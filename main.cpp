@@ -2,6 +2,7 @@
 #include <vector>
 #include "greedy.h"
 #include "swap.h"
+#include "realoca.h"
 #include "merge.h"
 
 #include "CostTimeServer.h"
@@ -90,5 +91,13 @@ int main() {
         }
     }
 
-    vector<vector<int>> swappedSolutin = swap(greedySolution, matrizT, matrizC, servers, p);
+    vector<vector<int>> swappedSolution = swap(greedySolution, matrizT, matrizC, servers, p);
+    vector<vector<int>> realocatedSolution = realoca(m, n, p, swappedSolution, matrizT, matrizC, servers);
+
+    for (const auto &row : realocatedSolution) {
+        for (int val : row) {
+            cout << val << " ";
+        }
+        cout << endl;
+    }
 }

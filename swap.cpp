@@ -29,7 +29,7 @@ int serverSize;
 // # Supõe-se que `vetorDeServidores` é uma lista de listas, 
 // # onde cada sublista representa os jobs em um único servidor.
 // TrocaJobs(vetorDeServidores)
-void validationSwapJobs(vector<CostTimeServer> &servers, vector<vector<int>> &solution , int currentServer, int swappingServer, int currentJobIndex, int swappingJobIndex){
+bool validationSwapJobs(vector<CostTimeServer> &servers, vector<vector<int>> &solution , int currentServer, int swappingServer, int currentJobIndex, int swappingJobIndex){
 
     // server solution
 
@@ -58,9 +58,11 @@ void validationSwapJobs(vector<CostTimeServer> &servers, vector<vector<int>> &so
                 int aux = solution[currentServer][currentJobIndex];
                 solution[currentServer][currentJobIndex] = solution[swappingServer][swappingJobIndex];
                 solution[swappingServer][swappingJobIndex] = aux;
+                // found a better solution
+                return 1;
             }
 
-            return;
+            return 0;
            
         }  
             
@@ -89,6 +91,8 @@ void validationSwapJobs(vector<CostTimeServer> &servers, vector<vector<int>> &so
                 int aux = solution[currentServer][currentJobIndex];
                 solution[currentServer][currentJobIndex] = solution[swappingServer][swappingJobIndex];
                 solution[swappingServer][swappingJobIndex] = aux;
+                // found a better solution
+                return 1;
             }
         }
     }
@@ -108,7 +112,7 @@ bool swapJobs(vector<CostTimeServer> &servers, vector<vector<int>>& solution, in
 
     for (int i = serverIndex + 1; i < serverSize; i++) {
         for (int j = 0; j < solution[i].size(); j++) {
-            validationSwapJobs(servers, solution, serverIndex, i, jobIndex, j);
+            if(validationSwapJobs(servers, solution, serverIndex, i, jobIndex, j)) return 1;
         }
     }
 

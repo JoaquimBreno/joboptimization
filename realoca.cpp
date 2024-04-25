@@ -3,11 +3,9 @@
 #include <vector>
 #include <algorithm> 
 
-#include "CostTimeServer.h"
-
 using namespace std;
 
-vector<vector<int>> realoca(int m, vector<vector<int>>& solution, vector<vector<int>>& matrizT, vector<vector<int>>& matrizC, vector<CostTimeServer>& costTimeServers, int n){
+vector<vector<int>> realoca(int m,  int n, int p, vector<vector<int>>& solution, vector<vector<int>>& matrizT, vector<vector<int>>& matrizC, vector<CostTimeServer>& costTimeServers){
     float soma, nova_soma;
     int job = -1;
     int servidor = -1;
@@ -65,8 +63,7 @@ vector<vector<int>> realoca(int m, vector<vector<int>>& solution, vector<vector<
                     costTimeServers[j].costUsed += matrizC[costTimeServers[j].id][i];
                     
                     if(servidor_job == m){
-                        costTimeServers[costTimeServers[j].id].timeUsed -= 0;
-                        costTimeServers[costTimeServers[j].id].costUsed -= 1000;
+                        costTimeServers[costTimeServers[j].id].costUsed -= p;
                     }else{
                         costTimeServers[costTimeServers[j].id].timeUsed -= matrizT[j][i];
                         costTimeServers[costTimeServers[j].id].costUsed -= matrizC[j][i];
@@ -87,7 +84,6 @@ vector<vector<int>> realoca(int m, vector<vector<int>>& solution, vector<vector<
                         costTimeServers[j].timeUsed -= matrizT[costTimeServers[j].id][i];
                         costTimeServers[j].costUsed -= matrizC[costTimeServers[j].id][i];
                         if(servidor_job == m){
-                            costTimeServers[costTimeServers[j].id].timeUsed -= 0;
                             costTimeServers[costTimeServers[j].id].costUsed -= 1000;
                         }else{
                             costTimeServers[costTimeServers[j].id].timeUsed -= matrizT[j][i];
@@ -127,10 +123,8 @@ vector<vector<int>> realoca(int m, vector<vector<int>>& solution, vector<vector<
         }
     }else{
         cout << "Não houve troca" << endl;
-        return 0;
+        return solution;
     }
-}
-
 };
     //  int m=2;
     // vector<vector<int>> solution = {{1,2,4},{0,3},{5}};

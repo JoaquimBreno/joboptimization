@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -Wall -Wextra -std=c++11
 EXECUTABLE = main
-SOURCES = main.cpp greedy.cpp swap.cpp# Adicione o novo arquivo cpp aqui
+SOURCES = main.cpp greedy.cpp swap.cpp realoca.cpp# Adicione o novo arquivo cpp aqui
 
 all: $(EXECUTABLE)
 
