@@ -14,7 +14,7 @@ vector<vector<int>> realoca(int m, vector<vector<int>>& solution, vector<vector<
     bool found_element = false;
     int servidor_job = -1;
     int servidor_group = -1;
-    int servidor_origem = -1;
+    // int servidor_origem = -1;
     bool encontrou_soma = false;
 
     for(int i = 0; i <= m; i++){
@@ -36,7 +36,7 @@ vector<vector<int>> realoca(int m, vector<vector<int>>& solution, vector<vector<
                 break;
             }
             for (int l = 0; l < group.size(); ++l){
-                if(servidor_group == 2){
+                if(servidor_group == m){
                     if (group[l] == i){
                         found_element = true;
                         servidor_job = m; 
@@ -61,50 +61,38 @@ vector<vector<int>> realoca(int m, vector<vector<int>>& solution, vector<vector<
                 // cout << "job 0 no servidor " << j << " " << matrizT[costTimeServers[j].id][i] << " " << costTimeServers[j].timeUsed << " " << costTimeServers[j].timeMax << " " << i << endl;
                 if(((matrizT[costTimeServers[j].id][i] + costTimeServers[j].timeUsed) <= (costTimeServers[j].timeMax))){
                     
-                    // cout << "teste " << matrizT[costTimeServers[j].id][i] + costTimeServers[j].timeUsed  << " " << i<< endl;
-                    // cout << "teste " << matrizC[costTimeServers[j].id][i] <<" " << costTimeServers[j].costUsed  <<  " " << i<< endl;
                     costTimeServers[j].timeUsed += matrizT[costTimeServers[j].id][i];
                     costTimeServers[j].costUsed += matrizC[costTimeServers[j].id][i];
-                    // cout << "teste " << matrizC[costTimeServers[j].id][i] <<" " << costTimeServers[j].costUsed  <<  " " << i<< endl;
-                    // cout << "teste " << costTimeServers[j].timeUsed  <<  " " << i<< endl;
-                    // if(servidor_job == m || j == m){
-                    //     cout << "server " << costTimeServers[m].id << i << j << endl;
-                    //     cout << "teste 2 " << costTimeServers[m].timeUsed  << endl;
-                    //     cout << "teste 1 " << matrizC[m][i] << endl;
-                    //     costTimeServers[m].timeUsed -= matrizT[m][i];
-                    //     costTimeServers[m].costUsed -= matrizC[m][i];
-                    //     // cout << "teste 1 " << costTimeServers[m].costUsed  << endl;
-                    //     // cout << "teste 2 " << costTimeServers[m].timeUsed  << endl;
-                    // }else{
-                    // cout << "server " << costTimeServers[j].id <<  " " << i<< endl;
-                    // cout << "teste 2 " << costTimeServers[costTimeServers[j].id].timeUsed  <<  " " << i<< endl;
-                    // cout << "teste 1 " << matrizC[j][i] <<  " " << i<< endl;
-                    costTimeServers[costTimeServers[j].id].timeUsed -= matrizT[j][i];
-                    costTimeServers[costTimeServers[j].id].costUsed -= matrizC[j][i];
-                    // cout << "teste 1 " << costTimeServers[costTimeServers[j].id].costUsed  <<  " " << i<< endl;
-                    // cout << "teste 2 " << costTimeServers[costTimeServers[j].id].timeUsed  <<  " " << i<< endl;
-                    // }
+                    
+                    if(servidor_job == m){
+                        costTimeServers[costTimeServers[j].id].timeUsed -= 0;
+                        costTimeServers[costTimeServers[j].id].costUsed -= 1000;
+                    }else{
+                        costTimeServers[costTimeServers[j].id].timeUsed -= matrizT[j][i];
+                        costTimeServers[costTimeServers[j].id].costUsed -= matrizC[j][i];
+                    }
                     
                     nova_soma = 0;
                     for(int k = 0; k <= m; k++){
                         nova_soma += costTimeServers[k].costUsed;
-                        // cout << "soma: " << k << " " << costTimeServers[k].costUsed << endl;
                     }
-                // cout << "soma " << soma << " nova soma " << nova_soma << " " << i << endl;
                     if(nova_soma < soma){
-                        servidor_origem = servidor_job;
+                        // servidor_origem = servidor_job;
                         job = i;
                         servidor = j;
                         soma = nova_soma;
-                        // cout << "cuida nova soma" << endl;
                         encontrou_soma = true;
                         break;
                     }else{
-                        // cout << "aqui" << endl;
                         costTimeServers[j].timeUsed -= matrizT[costTimeServers[j].id][i];
                         costTimeServers[j].costUsed -= matrizC[costTimeServers[j].id][i];
-                        costTimeServers[costTimeServers[j].id].timeUsed += matrizT[j][i];
-                        costTimeServers[costTimeServers[j].id].costUsed += matrizC[j][i];
+                        if(servidor_job == m){
+                            costTimeServers[costTimeServers[j].id].timeUsed -= 0;
+                            costTimeServers[costTimeServers[j].id].costUsed -= 1000;
+                        }else{
+                            costTimeServers[costTimeServers[j].id].timeUsed -= matrizT[j][i];
+                            costTimeServers[costTimeServers[j].id].costUsed -= matrizC[j][i];
+                        }
                         
                     }
                 }
@@ -112,17 +100,14 @@ vector<vector<int>> realoca(int m, vector<vector<int>>& solution, vector<vector<
         }
     }
 
-    int job_troca = job;
+    // int job_troca = job;
     int elementoRemovido;
     // Percorrendo o vector principal
-    // cout << job_troca << endl;
-    if(job_troca != -1){
+    if(job != -1){
         for (vector<int>& vetorInterno : solution) {
             // Percorrendo o vetor interno
             for (int i = 0; i < vetorInterno.size(); ++i) {
-                // Verificando se o elemento é 5
                 if (vetorInterno[i] == job) {
-                    // Removendo o elemento 5
                     elementoRemovido=vetorInterno[i];
                     vetorInterno.erase(vetorInterno.begin() + i);
                     // Ajustando o índice após a remoção
@@ -136,7 +121,6 @@ vector<vector<int>> realoca(int m, vector<vector<int>>& solution, vector<vector<
         for (vector<int>& vetorInterno : solution) {
             // Percorrendo o vetor interno
             for (int i = 0; i < vetorInterno.size(); ++i) {
-                // Verificando se o elemento é 5
                 // cout << "cuida "<< vetorInterno[i] << " " << i << endl;
                 return solution;
             }
