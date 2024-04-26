@@ -5,7 +5,7 @@
 
 using namespace std;
 
-vector<vector<int>> realoca(int m,  int n, int p, vector<vector<int>>& solution, vector<vector<int>>& matrizT, vector<vector<int>>& matrizC, vector<CostTimeServer>& costTimeServers){
+bool realoca(int m,  int n, int p, vector<vector<int>>& solution, vector<vector<int>>& matrizT, vector<vector<int>>& matrizC, vector<CostTimeServer>& costTimeServers){
     float soma, nova_soma;
     int job = -1;
     int servidor = -1;
@@ -18,14 +18,12 @@ vector<vector<int>> realoca(int m,  int n, int p, vector<vector<int>>& solution,
     for(int i = 0; i <= m; i++){
         soma += costTimeServers[i].costUsed;
     }
-    // cout << "soma " << soma << endl;
+    cout << "soma " << soma << endl;
 
     for(int i = 0; i < n; i++){
         // cout << "teste"<< i << endl;
         servidor_group = 0;
         if(encontrou_soma){
-            // cout << "saiu for" << endl;
-            encontrou_soma = false;
             break;
         }
         for (const auto& group : solution) {
@@ -57,8 +55,8 @@ vector<vector<int>> realoca(int m,  int n, int p, vector<vector<int>>& solution,
                 continue;
             }else{
                 // cout << "job 0 no servidor " << j << " " << matrizT[costTimeServers[j].id][i] << " " << costTimeServers[j].timeUsed << " " << costTimeServers[j].timeMax << " " << i << endl;
-                if(((matrizT[costTimeServers[j].id][i] + costTimeServers[j].timeUsed) <= (costTimeServers[j].timeMax))){
-                    
+                if (((matrizT[costTimeServers[j].id][i] + costTimeServers[j].timeUsed) <= (costTimeServers[j].timeMax)) && ((matrizC[costTimeServers[j].id][i] < matrizC[j][i]) || (servidor_job == m)))
+                   
                     costTimeServers[j].timeUsed += matrizT[costTimeServers[j].id][i];
                     costTimeServers[j].costUsed += matrizC[costTimeServers[j].id][i];
                     
@@ -70,36 +68,24 @@ vector<vector<int>> realoca(int m,  int n, int p, vector<vector<int>>& solution,
                     }
                     
                     nova_soma = 0;
-                    for(int k = 0; k <= m; k++){
-                        nova_soma += costTimeServers[k].costUsed;
-                    }
-                    if(nova_soma < soma){
-                        // servidor_origem = servidor_job;
+                    nova_soma = soma - matrizC[j][i] + matrizC[costTimeServers[j].id][i];
+                    cout << nova_soma << endl;
+                    cout << soma << endl;
+                    if (nova_soma < soma){
                         job = i;
-                        servidor = j;
-                        soma = nova_soma;
+                        servidor_job = j;
+                        nova_soma = nova_soma;
                         encontrou_soma = true;
                         break;
-                    }else{
-                        costTimeServers[j].timeUsed -= matrizT[costTimeServers[j].id][i];
-                        costTimeServers[j].costUsed -= matrizC[costTimeServers[j].id][i];
-                        if(servidor_job == m){
-                            costTimeServers[costTimeServers[j].id].costUsed -= 1000;
-                        }else{
-                            costTimeServers[costTimeServers[j].id].timeUsed -= matrizT[j][i];
-                            costTimeServers[costTimeServers[j].id].costUsed -= matrizC[j][i];
-                        }
-                        
                     }
                 }
             }
         }
-    }
 
     // int job_troca = job;
     int elementoRemovido;
     // Percorrendo o vector principal
-    if(job != -1){
+    if(encontrou_soma){
         for (vector<int>& vetorInterno : solution) {
             // Percorrendo o vetor interno
             for (int i = 0; i < vetorInterno.size(); ++i) {
@@ -111,19 +97,20 @@ vector<vector<int>> realoca(int m,  int n, int p, vector<vector<int>>& solution,
                 }
             }
         }
-        
-        solution[servidor].push_back(elementoRemovido);
+        solution[servidor_job].push_back(elementoRemovido);
 
-        for (vector<int>& vetorInterno : solution) {
-            // Percorrendo o vetor interno
-            for (int i = 0; i < vetorInterno.size(); ++i) {
-                // cout << "cuida "<< vetorInterno[i] << " " << i << endl;
-                return solution;
-            }
-        }
+        // for (vector<int>& vetorInterno : solution) {
+        //     // Percorrendo o vetor interno
+        //     for (int i = 0; i < vetorInterno.size(); ++i) {
+        //         cout << "cuida "<< vetorInterno[i] << " " << i << endl;
+        //     }
+        // }
+        cout << "houve troca" << endl;
+
+        return true;
     }else{
         cout << "Não houve troca" << endl;
-        return solution;
+        return false;
     }
 };
     //  int m=2;
