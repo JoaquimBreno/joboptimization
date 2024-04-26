@@ -91,13 +91,15 @@ int main() {
         }
     }
 
-    vector<vector<int>> swappedSolution = swap(greedySolution, matrizT, matrizC, servers, p);
-    vector<vector<int>> realocatedSolution = realoca(m, n, p, swappedSolution, matrizT, matrizC, servers);
+    bool swapFoundGreedy = swap(greedySolution, matrizT, matrizC, servers, p);
+    vector<vector<int>> realocatedSolution = realoca(m, n, p, greedySolution, matrizT, matrizC, servers);
 
+    cout << "Found a better solution: " << swapFoundGreedy << endl;
     for (const auto &row : realocatedSolution) {
         for (int val : row) {
             cout << val << " ";
         }
         cout << endl;
     }
+    
 }

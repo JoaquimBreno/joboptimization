@@ -9,26 +9,7 @@ vector<vector<int>> matrizCost;
 vector<vector<int>> matrizTime;
 int p;
 int serverSize;
-// Função TrocaJobs(vetorDeServidores, indiceServerAtual=0, indiceJobAtual=0):
-//     Se indiceServerAtual é igual ao tamanho de vetorDeServidores:
-//         Testa configuração atual do vetorDeServidores
-//         Retorna
 
-//     Se indiceJobAtual é igual ao tamanho do vetor no indiceServerAtual de vetorDeServidores:
-//         TrocaJobs(vetorDeServidores, indiceServerAtual + 1, 0)
-//         Retorna
-
-//     Para cada server em vetorDeServidores começando do indiceServerAtual + 1 até o final:
-//         Para cada job em server:
-//             Troca o job atual com esse job
-//             TrocaJobs(vetorDeServidores, indiceServerAtual, indiceJobAtual + 1)
-//             Desfaz a troca do job atual com esse job
-
-//     TrocaJobs(vetorDeServidores, indiceServerAtual, indiceJobAtual + 1)
-
-// # Supõe-se que `vetorDeServidores` é uma lista de listas, 
-// # onde cada sublista representa os jobs em um único servidor.
-// TrocaJobs(vetorDeServidores)
 bool validationSwapJobs(vector<CostTimeServer> &servers, vector<vector<int>> &solution , int currentServer, int swappingServer, int currentJobIndex, int swappingJobIndex){
 
     // server solution
@@ -96,14 +77,14 @@ bool validationSwapJobs(vector<CostTimeServer> &servers, vector<vector<int>> &so
             }
         }
     }
-
+    return 0;
 }
 
 bool swapJobs(vector<CostTimeServer> &servers, vector<vector<int>>& solution, int serverIndex, int jobIndex) {
     
     if (jobIndex > solution[serverIndex].size()-1) {
         if (serverIndex == serverSize-2) {
-            return 1;
+            return 0;
         } 
         else{
             return swapJobs(servers, solution, serverIndex + 1, 0);
@@ -119,8 +100,7 @@ bool swapJobs(vector<CostTimeServer> &servers, vector<vector<int>>& solution, in
     return swapJobs(servers, solution, serverIndex, jobIndex + 1);
 }
 
-vector<vector<int>> swap(vector<vector<int>>& solution, vector<vector<int>>& matrizT, vector<vector<int>>& matrizC, vector<CostTimeServer>& servers, int p) {
-    vector<vector<int>> new_solution = solution;
+bool swap(vector<vector<int>>& solution, vector<vector<int>>& matrizT, vector<vector<int>>& matrizC, vector<CostTimeServer>& servers, int p) {
     /** if i have an a array solution like [[1 2 3][5][6 7]] just make swappings like [[5 2 3][1][6 7]]*/
     /** once the newJobId = 6 an jobId =1  , i'll verify  if  server[0] supports newJobTime= matrizT[server[0].id][newJobId] checking if (server[0].timeUsed - oldJobTime + newJobTime <= server[0].timeMax)
      *  so, if it's true, i'll verify if server[1] supports newJobTime= matrizT[server[1].id][oldJobId], and oldJobTime = matrizT[server[1].id][newJobId], given that oldJobId is the same of newJobId and newJobId is the same of jobId 
@@ -129,35 +109,20 @@ vector<vector<int>> swap(vector<vector<int>>& solution, vector<vector<int>>& mat
      * And iterate to the next job of this same server[1] if exists or change to next server
      * Swapping each job of each server to whole jobs from another servers
      */
-
-    vector<CostTimeServer> serversnew = servers;
+    bool foundGreedy = 0;
     if(solution.size() < 2){
-        return new_solution;
+        return foundGreedy;
     }
     else{
+        // set global variables
         matrizCost = matrizC;
         matrizTime = matrizT;
         p = p;
         serverSize = servers.size();
-        swapJobs(serversnew, new_solution, 0, 0);
+
+        foundGreedy = swapJobs(servers, solution, 0, 0);
     }
 
 
-
-    cout << "New Solution" << endl;
-    for (const auto &server : serversnew) {
-        cout << "Server: " << server.id << " Time: " << server.timeMax << " Cost: " << server.costUsed << " TimeUsed: " << server.timeUsed << endl;
-    }
-    for (const auto &row : new_solution) {
-        for (int val : row) {
-            cout << val << " ";
-        }
-        cout << endl;
-    }
-    cout << "Old Solution" << endl;
-    for (const auto &server : servers) {
-        cout << "Server: " << server.id << " Time: " << server.timeMax << " Cost: " << server.costUsed << " TimeUsed: " << server.timeUsed << endl;
-    }
-
-    return new_solution; // Return the potentially new and improved solution
+    return foundGreedy; // Return the answer of found a better solution
 }

@@ -16,6 +16,7 @@ vector<vector<int>> vnd(int &custoT, int &tempoT, std::vector<std::pair<int, flo
     while(k<=3){
         if(k == 1){
             // chama swap
+            swap(greedySolution, matrizT, matrizC, servers, p);
             // custo novo = swap();
         }else if(k == 2){
             // chama algoritimo de busca

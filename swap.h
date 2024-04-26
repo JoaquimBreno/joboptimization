@@ -6,6 +6,6 @@
 
 using namespace std;
 
-vector<vector<int>> swap(vector<vector<int>>& solution, vector<vector<int>>& matrizT, vector<vector<int>>& matrizC, vector<CostTimeServer>& servers, int p);
+bool swap(vector<vector<int>>& solution, vector<vector<int>>& matrizT, vector<vector<int>>& matrizC, vector<CostTimeServer>& servers, int p);
 
 #endif // SWAP_H
