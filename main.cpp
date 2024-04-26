@@ -1,9 +1,8 @@
 #include <iostream>
 #include <vector>
 #include "greedy.h"
-#include "swap.h"
-#include "realoca.h"
 #include "merge.h"
+#include "vnd.h"
 
 #include "CostTimeServer.h"
 
@@ -91,15 +90,11 @@ int main() {
         }
     }
 
-    bool swapFoundGreedy = swap(greedySolution, matrizT, matrizC, servers, p);
-    vector<vector<int>> realocatedSolution = realoca(m, n, p, greedySolution, matrizT, matrizC, servers);
-
-    cout << "Found a better solution: " << swapFoundGreedy << endl;
-    for (const auto &row : realocatedSolution) {
-        for (int val : row) {
-            cout << val << " ";
-        }
-        cout << endl;
+    for (int i= 0 ; i<=m; i++){
+        cout << "Server " << i << " time used: " << servers[i].timeUsed << " cost used: " << servers[i].costUsed << endl;
     }
-    
+    vndFunction(servers, greedySolution, matrizT, matrizC, m, n, p);
+    for (int i= 0 ; i<=m; i++){
+        cout << "Server " << i << " time used: " << servers[i].timeUsed << " cost used: " << servers[i].costUsed << endl;
+    }
 }

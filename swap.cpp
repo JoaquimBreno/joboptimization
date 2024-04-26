@@ -110,19 +110,22 @@ bool swap(vector<vector<int>>& solution, vector<vector<int>>& matrizT, vector<ve
      * Swapping each job of each server to whole jobs from another servers
      */
     bool foundGreedy = 0;
-    if(solution.size() < 2){
-        return foundGreedy;
+    int nonEmptyVectorCount = 0;
+    for(const auto& vec : solution) {
+        if(!vec.empty()) {
+            nonEmptyVectorCount++;
+        }
+
+        if(nonEmptyVectorCount >= 2) {
+            matrizCost = matrizC;
+            matrizTime = matrizT;
+            p = p;
+            serverSize = servers.size();
+
+            foundGreedy = swapJobs(servers, solution, 0, 0);
+            return foundGreedy; // Return the answer of found a better solution
+        }
     }
-    else{
-        // set global variables
-        matrizCost = matrizC;
-        matrizTime = matrizT;
-        p = p;
-        serverSize = servers.size();
 
-        foundGreedy = swapJobs(servers, solution, 0, 0);
-    }
-
-
-    return foundGreedy; // Return the answer of found a better solution
+    return foundGreedy;
 }
