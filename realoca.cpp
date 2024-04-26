@@ -11,78 +11,78 @@ bool realoca(int m,  int n, int p, vector<vector<int>>& solution, vector<vector<
     int servidor = -1;
     bool found_element = false;
     int servidor_job = -1;
-    int servidor_group = -1;
-    // int servidor_origem = -1;
+    int servidor_group = -2;
+    int servidor_origem = -1;
     bool encontrou_soma = false;
 
     for(int i = 0; i <= m; i++){
         soma += costTimeServers[i].costUsed;
     }
-    cout << "soma " << soma << endl;
 
     for(int i = 0; i < n; i++){
-        // cout << "teste"<< i << endl;
         servidor_group = 0;
+        found_element = false;
         if(encontrou_soma){
             break;
         }
-        for (const auto& group : solution) {
+        for (const auto& group : solution){
             if(found_element){
-                found_element = false;
                 break;
             }
             for (int l = 0; l < group.size(); ++l){
                 if(servidor_group == m){
                     if (group[l] == i){
                         found_element = true;
-                        servidor_job = m; 
+                        servidor_job = -1;
                         break;
                     }
                 }else if (group[l] == i) {
                     found_element = true;
                     servidor_job = costTimeServers[servidor_group].id; 
+                    servidor_origem = servidor_group;
                     break;
                 }
             }
             servidor_group++;
         }
-        
-        // cout << servidor_job << i << endl;
         for(int j = 0; j < m; j++){
-            // cout << costTimeServers[j].id << " " << servidor_job << " " << i << endl;
             if(costTimeServers[j].id == servidor_job){
-                // cout << costTimeServers[j].id << " " << servidor_job << " " << i << endl;
                 continue;
             }else{
-                // cout << "job 0 no servidor " << j << " " << matrizT[costTimeServers[j].id][i] << " " << costTimeServers[j].timeUsed << " " << costTimeServers[j].timeMax << " " << i << endl;
-                if (((matrizT[costTimeServers[j].id][i] + costTimeServers[j].timeUsed) <= (costTimeServers[j].timeMax)) && ((matrizC[costTimeServers[j].id][i] < matrizC[j][i]) || (servidor_job == m)))
-                   
+                
+                if (((matrizT[costTimeServers[j].id][i] + costTimeServers[j].timeUsed) <= (costTimeServers[j].timeMax)) and ((servidor_job == -1) || (matrizC[costTimeServers[j].id][i] < matrizC[servidor_job][i]))){
+                    // if(servidor_job != -1){
+                    //     cout << "entrou " << endl;
+                    //     cout << servidor_job << endl;
+                    //     cout << "J: " << j << " " << i << " " << matrizT[costTimeServers[j].id][i] << " " << matrizC[servidor_job][i] << " " << costTimeServers[j].timeUsed << " " << costTimeServers[j].timeMax << endl;
+                    // }else{
+                    //     cout << "entrou local " << endl;
+                    //     cout << servidor_job << endl;
+                    //     cout << "J: " << j << " " << i << " " << matrizT[costTimeServers[j].id][i] << " " << 1000 << " " << costTimeServers[j].timeUsed << " " << costTimeServers[j].timeMax << endl;
+                    // }
                     costTimeServers[j].timeUsed += matrizT[costTimeServers[j].id][i];
                     costTimeServers[j].costUsed += matrizC[costTimeServers[j].id][i];
                     
-                    if(servidor_job == m){
-                        costTimeServers[costTimeServers[j].id].costUsed -= p;
+                    if(servidor_job == -1){
+                       costTimeServers[m].costUsed -= p;
+
+                        nova_soma = soma - p + matrizC[costTimeServers[j].id][i];
                     }else{
-                        costTimeServers[costTimeServers[j].id].timeUsed -= matrizT[j][i];
-                        costTimeServers[costTimeServers[j].id].costUsed -= matrizC[j][i];
+                        
+                        costTimeServers[servidor_origem].timeUsed -= matrizT[servidor_job][i];
+                        costTimeServers[servidor_origem].costUsed -= matrizC[servidor_job][i];
                     }
                     
-                    nova_soma = 0;
-                    nova_soma = soma - matrizC[j][i] + matrizC[costTimeServers[j].id][i];
-                    cout << nova_soma << endl;
-                    cout << soma << endl;
                     if (nova_soma < soma){
                         job = i;
                         servidor_job = j;
-                        nova_soma = nova_soma;
                         encontrou_soma = true;
                         break;
                     }
                 }
             }
         }
-
-    // int job_troca = job;
+    }
     int elementoRemovido;
     // Percorrendo o vector principal
     if(encontrou_soma){
@@ -99,12 +99,6 @@ bool realoca(int m,  int n, int p, vector<vector<int>>& solution, vector<vector<
         }
         solution[servidor_job].push_back(elementoRemovido);
 
-        // for (vector<int>& vetorInterno : solution) {
-        //     // Percorrendo o vetor interno
-        //     for (int i = 0; i < vetorInterno.size(); ++i) {
-        //         cout << "cuida "<< vetorInterno[i] << " " << i << endl;
-        //     }
-        // }
         cout << "houve troca" << endl;
 
         return true;
@@ -113,28 +107,3 @@ bool realoca(int m,  int n, int p, vector<vector<int>>& solution, vector<vector<
         return false;
     }
 };
-    //  int m=2;
-    // vector<vector<int>> solution = {{1,2,4},{0,3},{5}};
-    // vector<vector<int>> matrizT= {
-    //     {120, 80, 180, 95, 35, 52},//220
-    //     {145, 70, 230, 70, 40, 59},//350
-    //     {0,0,0,0,0,0}
-    // };
-    // vector<vector<int>> matrizC = {
-    //     {350, 50, 540, 245, 145, 200},//220
-    //     {410, 80, 500, 200, 100, 196},//350
-    //     {1000,1000,1000,1000,1000,1000}
-    // };
-    // vector<CostTimeServer> costTimeServers= {
-    //     {1, 2000.0f},//350
-    //     {0, 2000.0f},//220
-    //     {2, 10000.0f}
-    // };
-    // int n=6;
-    
-    // costTimeServers[1].costUsed = 595;
-    // costTimeServers[0].costUsed = 680;
-    // costTimeServers[1].timeUsed = 215;
-    // costTimeServers[0].timeUsed = 340;
-    // costTimeServers[2].costUsed = 1000;
-    // costTimeServers[2].timeUsed = 0;

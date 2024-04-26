@@ -9,10 +9,10 @@ void vndFunction(vector<CostTimeServer>& servers, vector<vector<int>>& solution,
     bool solucao_nova = false;
 
     while(k<=3){
-        if(k == 1){
+        if(k == 2){
             // chama swap
             solucao_nova = swap(solution, matrizT, matrizC, servers, p);
-        }else if(k == 2){
+        }else if(k == 1){
             // chama algoritimo de realoca
             solucao_nova = realoca(m, n, p, solution, matrizT, matrizC, servers);
         }else if(k == 3){
