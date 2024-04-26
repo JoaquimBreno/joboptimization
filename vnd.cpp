@@ -12,15 +12,6 @@ void vndFunction(vector<CostTimeServer>& servers, vector<vector<int>>& solution,
         if(k == 1){
             // chama swap
             solucao_nova = swap(solution, matrizT, matrizC, servers, p);
-            for(const auto& row : solution){
-                for(const auto& elem : row){
-                    cout << elem << " ";
-                }
-                cout << endl;
-            }
-            for (int i= 0 ; i<=m; i++){
-                cout << "Server " << i << " time used: " << servers[i].timeUsed << " cost used: " << servers[i].costUsed << endl;
-            }
         }else if(k == 2){
             // chama algoritimo de realoca
             solucao_nova = realoca(m, n, p, solution, matrizT, matrizC, servers);

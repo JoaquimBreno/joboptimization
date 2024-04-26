@@ -93,7 +93,11 @@ bool swapJobs(vector<CostTimeServer> &servers, vector<vector<int>>& solution, in
 
     for (int i = serverIndex + 1; i < serverSize; i++) {
         for (int j = 0; j < solution[i].size(); j++) {
-            if(validationSwapJobs(servers, solution, serverIndex, i, jobIndex, j)) return 1;
+
+            if(validationSwapJobs(servers, solution, serverIndex, i, jobIndex, j)){
+                cout << "found a better solution" << endl;
+                return 1;
+            }
         }
     }
 
@@ -123,6 +127,7 @@ bool swap(vector<vector<int>>& solution, vector<vector<int>>& matrizT, vector<ve
             serverSize = servers.size();
 
             foundGreedy = swapJobs(servers, solution, 0, 0);
+            cout << "foundGreedy: " << foundGreedy << endl;
             return foundGreedy; // Return the answer of found a better solution
         }
     }
