@@ -10,7 +10,8 @@
 using namespace std;
 
 int main() {
-    int n, m, p;
+    int n, m;
+    float p;
     // vector<pair<int, float>>  arrayB;
     // vector<vector<int>> matrizT;
     // vector<vector<int>> matrizC;
@@ -98,7 +99,7 @@ int main() {
     }
     cout << endl;
     vector<vector<int>> greedySolution = greedy(n, m, servers, matrizT, matrizC);
-    
+
     cout << "HERE THE SOLUTION" << endl;
     for(const auto& row: greedySolution){
         for(int val: row){
@@ -119,11 +120,17 @@ int main() {
             if(i != m){
                 servers[i].timeUsed += matrizT[servers[i].id][greedySolution[i][j]];
                 servers[i].costUsed += matrizC[servers[i].id][greedySolution[i][j]];
+                servers[i].numSolutions++;
             }
             else{
                 servers[i].costUsed  += p;  
+                servers[i].numSolutions++;
             }
         }
+    }
+
+    for (int i= 0 ; i<=m; i++){
+        cout << "Server " << i << " time used: " << servers[i].timeUsed << " cost used: " << servers[i].costUsed << " num solutions: " << servers[i].numSolutions << endl;
     }
 
     for (int i= 0 ; i<=m; i++){

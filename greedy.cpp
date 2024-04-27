@@ -64,7 +64,6 @@ vector<vector<int>> greedy(int &n, int &m, vector<CostTimeServer> &servers, vect
     for (int i = 0; i <= m-1; ++i) {
             CostTimeServer server = servers[i];
             timeCost = server.timeMax;
-            cout << "Server: " << server.id << " Time: " << server.timeMax << " Cost: " << server.costUsed << " TimeUsed: " << server.timeUsed << endl;
             vector<int> solution;
             vector<int> lastSolution;
             for(pair<int,float> &row: matrizCT[server.id]){
