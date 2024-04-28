@@ -30,3 +30,19 @@ void vndFunction(vector<CostTimeServer>& servers, vector<vector<int>>& solution,
 
     }
 }
+
+
+// Server 0 time used: 35 cost used: 32
+// Server 1 time used: 34 cost used: 35
+// Server 2 time used: 29 cost used: 32
+// Server 3 time used: 29 cost used: 31
+// Server 4 time used: 27 cost used: 74
+// Server 5 time used: 0 cost used: 3000
+// HERE THE SOLUTION
+// 0 11 
+// 10 8 
+// 3 1 
+// 2 7 
+// 6 5 9 4 
+// 14 12 13 
+// soma custo 3204

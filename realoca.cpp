@@ -29,7 +29,7 @@ bool realoca(int m,  int n, int p, vector<vector<int>>& solution, vector<vector<
             if(found_element){
                 break;
             }
-            for (int l = 0; l < group.size(); ++l){
+            for (int l = 0; l < costTimeServers[servidor_group].numSolutions; ++l){
                 if(servidor_group == m){
                     if (group[l] == i){
                         found_element = true;
@@ -85,10 +85,11 @@ bool realoca(int m,  int n, int p, vector<vector<int>>& solution, vector<vector<
     }
     int elementoRemovido;
     // Percorrendo o vector principal
+    servidor_group = 0;
     if(encontrou_soma){
         for (vector<int>& vetorInterno : solution) {
             // Percorrendo o vetor interno
-            for (int i = 0; i < vetorInterno.size(); ++i) {
+            for (int i = 0; i < costTimeServers[servidor_group].numSolutions; ++i) {
                 if (vetorInterno[i] == job) {
                     elementoRemovido=vetorInterno[i];
                     vetorInterno.erase(vetorInterno.begin() + i);
@@ -96,8 +97,12 @@ bool realoca(int m,  int n, int p, vector<vector<int>>& solution, vector<vector<
                     i--;
                 }
             }
+            servidor_group++;
         }
+        
+        costTimeServers[servidor_origem].numSolutions -= - 1;
         solution[servidor_job].push_back(elementoRemovido);
+        costTimeServers[servidor_job].numSolutions += 1;
 
         cout << "houve troca" << endl;
 
