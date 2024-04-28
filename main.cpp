@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <fstream>
+#include <sstream>
 #include "greedy.h"
 #include "merge.h"
 #include "vnd.h"
@@ -10,65 +12,129 @@
 using namespace std;
 
 int main() {
+    // Abrir o arquivo para leitura
+    ifstream file("n5m15A.txt");
+    if (!file.is_open()) {
+        cerr << "Erro ao abrir o arquivo!" << endl;
+        return 1;
+    }
+
+    // Ler a primeira linha (n, m, p)
     int n, m;
     float p;
-    // vector<pair<int, float>>  arrayB;
-    // vector<vector<int>> matrizT;
-    // vector<vector<int>> matrizC;
+    string line;
+    getline(file, line);
+    stringstream ss(line);
+    ss >> n;
+
+    getline(file, line);
+    ss.clear();
+    ss.str(line);
+    ss >> m;
+
+    getline(file, line);
+    ss.clear();
+    ss.str(line);
+    ss >> p;
     
-    // lerEntradas(n, m, p, arrayB, matrizT, matrizC);
-    // n=6;
-    // m=2;
+    // Ler a quarta linha (vazia)
+    getline(file, line);  // Lê a quarta linha (vazia) para evitar problemas de leitura
+
+    vector<CostTimeServer> servers;
+    getline(file, line);
+    int value;
+    ss.clear();
+    ss.str(line);
+    for(int i = 0; i < m; i++){
+        ss >> value;
+        servers.push_back({i, value});
+    }
+
+     getline(file, line); 
+
+    // Ler as linhas restantes (matriz de adjacência)
+    vector<vector<int>> matrizT(m, vector<int>(n, 0));
+    vector<vector<int>> matrizC(m, vector<int>(n, 0));
+    for (int i = 0; i < m; i++) {
+        getline(file, line);
+        ss.clear();
+        ss.str(line);
+        int j = 0;
+        int value;
+        while (ss >> value) {
+            matrizT[i][j] = value;
+            j++;
+        }
+    }
+    getline(file, line); 
+
+    for (int i = 0; i < m; i++) {
+        getline(file, line);
+        ss.clear();
+        ss.str(line);
+        int j = 0;
+        int value;
+        while (ss >> value) {
+            matrizC[i][j] = value;
+            j++;
+        }
+    }
+
+    // Fechar o arquivo
+    file.close();
+
+    // // n=6;
+    // // m=2;
+    // // p=1000;
+    // // vector<CostTimeServer> servers = {
+    // //     {0, 220.0f}, 
+    // //     {1, 350.0f}
+    // // };
+
+    // // vector<vector<int>> matrizT = {
+    // //     {120, 80, 180, 95, 35, 52},
+    // //     {145, 70, 230, 70, 40, 59}
+    // // };
+
+    // // vector<vector<int>> matrizC = {
+    // //     {350, 50, 540, 245, 145, 200},
+    // //     {410, 80, 500, 200, 100, 196}
+    // // };
+
+
+    // n=15;
+    // m=5;
     // p=1000;
     // vector<CostTimeServer> servers = {
-    //     {0, 220.0f}, 
-    //     {1, 350.0f}
+    //     {0, 36.0f}, 
+    //     {1, 34.0f}, 
+    //     {2, 38.0f}, 
+    //     {3, 27.0f}, 
+    //     {4, 33.0f}
     // };
+    
+    // // {2, 38.0f}, 
+    // // {0, 36.0f}, 
+    // // {1, 34.0f}, 
+    // // {4, 33.0f}
+    // // {3, 27.0f},
+    
 
     // vector<vector<int>> matrizT = {
-    //     {120, 80, 180, 95, 35, 52},
-    //     {145, 70, 230, 70, 40, 59}
+    //     {8, 15, 14, 23,  8, 16,  8, 25,  9, 17, 25, 15, 10,  8, 24},
+    //     {15,  7, 23, 22, 11, 11, 12, 10, 17, 16,  7, 16, 10, 18, 22},
+    //     {21, 20,  6, 22, 24, 10, 24,  9, 21, 14, 11, 14, 11, 19, 16},
+    //     {20, 11,  8, 14,  9,  5,  6, 19, 19,  7,  6,  6, 13,  9, 18},
+    //     {8, 13, 13, 13, 10, 20, 25, 16, 16, 17, 10, 10,  5, 12, 23}
     // };
 
     // vector<vector<int>> matrizC = {
-    //     {350, 50, 540, 245, 145, 200},
-    //     {410, 80, 500, 200, 100, 196}
+    //     {17, 21, 22, 18, 24, 15, 20, 18, 19, 18, 16, 22, 24, 24, 16},
+    //     {23, 16, 21, 16, 17, 16, 19, 25, 18, 21, 17, 15, 25, 17, 24},
+    //     {16, 20, 16, 25, 24, 16, 17, 19, 19, 18, 20, 16, 17, 21, 24},
+    //     {19, 19, 22, 22, 20, 16, 19, 17, 21, 19, 25, 23, 25, 25, 25},
+    //     {18, 19, 15, 15, 21, 25, 16, 16, 23, 15, 22, 17, 19, 22, 24}
     // };
-
-
-    n=15;
-    m=5;
-    p=1000;
-    vector<CostTimeServer> servers = {
-        {0, 36.0f}, 
-        {1, 34.0f}, 
-        {2, 38.0f}, 
-        {3, 27.0f}, 
-        {4, 33.0f}
-    };
-    
-    // {2, 38.0f}, 
-    // {0, 36.0f}, 
-    // {1, 34.0f}, 
-    // {4, 33.0f}
-    // {3, 27.0f},
-    
-
-    vector<vector<int>> matrizT = {
-        {8, 15, 14, 23,  8, 16,  8, 25,  9, 17, 25, 15, 10,  8, 24},
-        {15,  7, 23, 22, 11, 11, 12, 10, 17, 16,  7, 16, 10, 18, 22},
-        {21, 20,  6, 22, 24, 10, 24,  9, 21, 14, 11, 14, 11, 19, 16},
-        {20, 11,  8, 14,  9,  5,  6, 19, 19,  7,  6,  6, 13,  9, 18},
-        {8, 13, 13, 13, 10, 20, 25, 16, 16, 17, 10, 10,  5, 12, 23}
-    };
-
-    vector<vector<int>> matrizC = {
-        {17, 21, 22, 18, 24, 15, 20, 18, 19, 18, 16, 22, 24, 24, 16},
-        {23, 16, 21, 16, 17, 16, 19, 25, 18, 21, 17, 15, 25, 17, 24},
-        {16, 20, 16, 25, 24, 16, 17, 19, 19, 18, 20, 16, 17, 21, 24},
-        {19, 19, 22, 22, 20, 16, 19, 17, 21, 19, 25, 23, 25, 25, 25},
-        {18, 19, 15, 15, 21, 25, 16, 16, 23, 15, 22, 17, 19, 22, 24}
-    };
 
 
 
